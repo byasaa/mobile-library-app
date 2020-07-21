@@ -12,8 +12,8 @@ import {connect} from 'react-redux';
 import {logout} from '../../redux/actions/auth';
 
 class AccountScreen extends Component {
-  handleLogout = () => {
-    this.props.dispatch(logout());
+  handleLogout = async () => {
+    await this.props.dispatch(logout());
     this.props.navigation.navigate('Auth');
   };
   render() {
