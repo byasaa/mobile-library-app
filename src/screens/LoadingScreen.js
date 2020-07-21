@@ -1,12 +1,15 @@
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, Image, Animated} from 'react-native';
 import ilustration from '../images/bookshelf.png';
+import {connect} from 'react-redux';
+import {refresh, logout} from '../redux/actions/auth';
 
 class LoadingScreen extends Component {
   state = {
     logoAnimation: new Animated.Value(0),
     logoText: new Animated.Value(0),
     loadingSpinner: false,
+    redirect: '',
   };
   componentDidMount() {
     const {logoAnimation, logoText} = this.state;
@@ -27,15 +30,26 @@ class LoadingScreen extends Component {
         this.setState({
           loadingSpinner: true,
         });
-        this.props.navigation.navigate('Register');
       }),
     ]);
+    const data = {
+      token: this.props.auth.data.refreshToken,
+    };
+    this.props
+      .dispatch(refresh(data))
+      .then((res) => {
+        console.log(res);
+        this.props.navigation.navigate('Main');
+      })
+      .catch((err) => {
+        console.log(JSON.stringify(err));
+        this.props.dispatch(logout());
+        this.props.navigation.navigate('Auth');
+      });
   }
   render() {
     return (
-      <View
-        style={style.container}
-        onTouchStart={() => this.props.navigation.navigate('Register')}>
+      <View style={style.container}>
         <Animated.View
           style={{
             opacity: this.state.logoAnimation,
@@ -57,7 +71,10 @@ class LoadingScreen extends Component {
   }
 }
 
-export default LoadingScreen;
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+});
+export default connect(mapStateToProps)(LoadingScreen);
 
 const style = StyleSheet.create({
   container: {

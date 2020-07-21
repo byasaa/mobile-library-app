@@ -33,3 +33,14 @@ export const logout = () => {
     type: 'LOGOUT',
   };
 };
+
+export const refresh = (data) => {
+  return {
+    type: 'REFRESH',
+    payload: axios({
+      method: 'POST',
+      url: REACT_APP_API_URL + 'auth/token/',
+      data: data,
+    }),
+  };
+};
