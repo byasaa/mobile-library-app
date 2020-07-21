@@ -1,5 +1,5 @@
 import 'react-native-gesture-handler';
-import * as React from 'react';
+import React from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
@@ -9,7 +9,10 @@ import {
   HomeScreen,
   RegisterScreen,
   DetailScreen,
+  AccountScreen,
+  HistoryScreen,
 } from '../screens';
+import {connect} from 'react-redux';
 import {Root} from 'native-base';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
@@ -42,21 +45,21 @@ const bottomBar = () => {
       />
       <Tab.Screen
         name="History"
-        component={AuthScreen}
+        component={HistoryScreen}
         options={{
           tabBarLabel: 'History',
-          tabBarIcon: ({tintColor}) => (
-            <Icon name="file-tray-outline" color={tintColor} size={24} />
+          tabBarIcon: ({color}) => (
+            <Icon name="file-tray-outline" color={color} size={24} />
           ),
         }}
       />
       <Tab.Screen
         name="Account"
-        component={RegisterScreen}
+        component={AccountScreen}
         options={{
           tabBarLabel: 'Account',
-          tabBarIcon: ({tintColor}) => (
-            <Icon name="person-circle-outline" color={tintColor} size={24} />
+          tabBarIcon: ({color}) => (
+            <Icon name="person-circle-outline" color={color} size={24} />
           ),
         }}
       />
@@ -66,38 +69,51 @@ const bottomBar = () => {
 
 const Stack = createStackNavigator();
 
-export default function Navigator() {
+function Navigator(props) {
   return (
     <NavigationContainer>
       <Root>
         <Stack.Navigator>
           <Stack.Screen
-            name="Main"
-            component={bottomBar}
-            options={{headerShown: false}}
-          />
-          <Stack.Screen
             name="Loading"
             component={LoadingScreen}
             options={{headerShown: false}}
           />
-          <Stack.Screen
-            name="Register"
-            component={RegisterScreen}
-            options={{headerShown: false}}
-          />
-          <Stack.Screen
-            name="Auth"
-            component={AuthScreen}
-            options={{headerShown: false}}
-          />
-          <Stack.Screen
-            name="Detail"
-            component={DetailScreen}
-            options={{headerTransparent: true, headerTitle: null}}
-          />
+          {props.auth.isLogin ? (
+            <>
+              <Stack.Screen
+                name="Main"
+                component={bottomBar}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="Detail"
+                component={DetailScreen}
+                options={{headerTransparent: true, headerTitle: null}}
+              />
+            </>
+          ) : (
+            <>
+              <Stack.Screen
+                name="Auth"
+                component={AuthScreen}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="Register"
+                component={RegisterScreen}
+                options={{headerShown: false}}
+              />
+            </>
+          )}
         </Stack.Navigator>
       </Root>
     </NavigationContainer>
   );
 }
+const mapStateToProps = (state) => {
+  return {
+    auth: state.auth,
+  };
+};
+export default connect(mapStateToProps)(Navigator);
