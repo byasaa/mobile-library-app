@@ -8,36 +8,115 @@ import {
   Text,
   SafeAreaView,
   Platform,
+  Button,
+  RefreshControl,
+  TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
-import {} from '../components';
-import axios from 'axios';
+import {BookList} from '../components';
+import {Toast, Spinner} from 'native-base';
 import Icon from 'react-native-vector-icons/Ionicons';
-// import {REACT_APP_API_URL} from 'react-native-dotenv';
+import {connect} from 'react-redux';
+import {getBook} from '../redux/actions/book';
 import {REACT_APP_API_URL} from '@env';
+import {refresh} from '../redux/actions/auth';
 
 class HomeScreen extends Component {
   state = {
     search: '',
+    books: [],
+    page: 1,
+    isLoading: true,
+    spinnerLoading: false,
+    refresh: false,
   };
-  componentDidMount() {
-    console.log(REACT_APP_API_URL);
-    const token =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoxLCJyb2xlIjoiYWRtaW4iLCJ1c2VybmFtZSI6ImJ5YXNhYSIsImNyZWF0ZWRfYXQiOiIyMDIwLTA2LTExVDA3OjI2OjQ1LjAwMFoiLCJ1cGRhdGVkX2F0IjoiMjAyMC0wNi0xMVQwNzoyNjo0NS4wMDBaIn0sImlhdCI6MTU5NDk1NDU0MCwiZXhwIjoxNTk0OTU4MTQwfQ.ICmcKnub8eqmM_I8WykYRbhgmUJ4ZDhlrDEpuTq36mg';
-    axios({
-      method: 'GET',
-      url: REACT_APP_API_URL + 'books/',
-      headers: {
-        Authorization: token,
-      },
-    })
+  onRefresh = async () => {
+    await this.setState({isLoading: true, refresh: true, page: 1});
+    const token = this.props.auth.data.token;
+    const {page} = this.state;
+    await this.props
+      .dispatch(getBook(token, page))
+      .then((res) => {
+        this.setState({
+          books: res.action.payload.data.data,
+          refresh: false,
+          isLoading: false,
+        });
+      })
+      .catch(() => {
+        this.setState({
+          refresh: false,
+          isLoading: false,
+        });
+      });
+  };
+  getAllBook = () => {
+    const token = this.props.auth.data.token;
+    const {page} = this.state;
+    this.props
+      .dispatch(getBook(token, page))
       .then((res) => {
         console.log(res);
+        this.setState({
+          books: this.state.books.concat(res.action.payload.data.data),
+          isLoading: false,
+          spinnerLoading: false,
+        });
       })
       .catch((err) => {
-        console.log(err);
+        this.setState({isLoading: false, spinnerLoading: false});
+        Toast.show({
+          text: err.message,
+          position: 'bottom',
+        });
       });
+  };
+  handleLoadMore = () => {
+    this.setState(
+      {
+        page: this.state.page + 1,
+        spinnerLoading: true,
+      },
+      () => {
+        this.getAllBook();
+      },
+    );
+  };
+  componentDidMount() {
+    this.getAllBook();
+  }
+  componentDidUpdate(prevProps) {
+    if (prevProps.isFocused !== this.props.isFocused) {
+      this.getAllBook();
+    }
   }
   render() {
+    const isCloseToBottom = ({
+      layoutMeasurement,
+      contentOffset,
+      contentSize,
+    }) => {
+      const paddingToBottom = 20;
+      return (
+        layoutMeasurement.height + contentOffset.y >=
+        contentSize.height - paddingToBottom
+      );
+    };
+    if (this.state.isLoading) {
+      return (
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: '#fff',
+          }}>
+          <ActivityIndicator />
+          <Spinner />
+        </View>
+      );
+    }
+    const spinner = this.state.spinnerLoading ? <Spinner /> : false;
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.container}>
@@ -52,80 +131,58 @@ class HomeScreen extends Component {
               />
             </View>
           </View>
-          <ScrollView>
+          <ScrollView
+            refreshControl={
+              <RefreshControl
+                refreshing={this.state.refresh}
+                onRefresh={this.onRefresh}
+              />
+            }
+            onScroll={({nativeEvent}) => {
+              if (isCloseToBottom(nativeEvent)) {
+                this.handleLoadMore();
+              }
+            }}
+            scrollEventThrottle={400}>
             <View style={styles.margin10}>
               <Text style={styles.titleSection}>Latest Book</Text>
               <ScrollView horizontal>
-                <View
-                  style={styles.slider}
-                  onTouchStart={() => this.props.navigation.navigate('Detail')}>
-                  <Image
-                    style={styles.bookImg}
-                    source={require('../images/dummy.jpg')}
-                  />
-                </View>
-                <View style={styles.slider}>
-                  <Image
-                    style={styles.bookImg}
-                    source={require('../images/dummy.jpg')}
-                  />
-                </View>
-                <View style={styles.slider}>
-                  <Image
-                    style={styles.bookImg}
-                    source={require('../images/dummy.jpg')}
-                  />
-                </View>
-                <View style={styles.slider}>
-                  <Image
-                    style={styles.bookImg}
-                    source={require('../images/dummy.jpg')}
-                  />
-                </View>
-                <View style={styles.slider}>
-                  <Image
-                    style={styles.bookImg}
-                    source={require('../images/dummy.jpg')}
-                  />
-                </View>
-                <View style={styles.slider}>
-                  <Image
-                    style={styles.bookImg}
-                    source={require('../images/dummy.jpg')}
-                  />
-                </View>
+                {this.state.books.map((book) => {
+                  return (
+                    <TouchableOpacity
+                      key={book.id}
+                      onPress={() =>
+                        this.props.navigation.navigate('Detail', {id: book.id})
+                      }>
+                      <View key={book.id} style={styles.slider}>
+                        <Image
+                          style={styles.bookImg}
+                          source={{
+                            uri: `${REACT_APP_API_URL}img/${book.image}`,
+                          }}
+                        />
+                      </View>
+                    </TouchableOpacity>
+                  );
+                })}
               </ScrollView>
             </View>
             <View style={styles.margin10}>
               <Text style={styles.titleSection}>All Book</Text>
-              <View style={styles.bookGroup}>
-                <Image
-                  style={styles.bookImg}
-                  source={require('../images/dummy.jpg')}
-                />
-                <View style={{paddingLeft: 15}}>
-                  <Text style={styles.titleSection}>Title</Text>
-                  <Text>Penulis</Text>
-                  <Text>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Voluptate, illum.
-                  </Text>
-                </View>
-              </View>
-              <View style={styles.bookGroup}>
-                <Image
-                  style={styles.bookImg}
-                  source={require('../images/dummy.jpg')}
-                />
-                <View style={{paddingLeft: 15}}>
-                  <Text style={styles.titleSection}>Title</Text>
-                  <Text>Penulis</Text>
-                  <Text>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Voluptate, illum.
-                  </Text>
-                </View>
-              </View>
+              {this.state.books.map((book) => {
+                return (
+                  <TouchableOpacity
+                    key={book.id}
+                    onPress={() =>
+                      this.props.navigation.navigate('Detail', {
+                        id: book.id,
+                      })
+                    }>
+                    <BookList data={book} />
+                  </TouchableOpacity>
+                );
+              })}
+              {spinner}
             </View>
           </ScrollView>
         </View>
@@ -134,7 +191,11 @@ class HomeScreen extends Component {
   }
 }
 
-export default HomeScreen;
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+  book: state.book,
+});
+export default connect(mapStateToProps)(HomeScreen);
 
 const styles = StyleSheet.create({
   container: {
