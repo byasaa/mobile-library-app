@@ -8,7 +8,8 @@ import {
   Text,
   SafeAreaView,
   Platform,
-  Button,
+  BackHandler,
+  Alert,
   RefreshControl,
   TouchableOpacity,
   ActivityIndicator,
@@ -82,13 +83,33 @@ class HomeScreen extends Component {
       },
     );
   };
+  handleBackButton = () => {
+    Alert.alert(
+      'Exit App',
+      'Exiting the application?',
+      [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: 'OK',
+          onPress: () => BackHandler.exitApp(),
+        },
+      ],
+      {
+        cancelable: false,
+      },
+    );
+    return true;
+  };
   componentDidMount() {
     this.getAllBook();
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
   }
-  componentDidUpdate(prevProps) {
-    if (prevProps.isFocused !== this.props.isFocused) {
-      this.getAllBook();
-    }
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
   }
   render() {
     const isCloseToBottom = ({
@@ -152,7 +173,7 @@ class HomeScreen extends Component {
                     <TouchableOpacity
                       key={book.id}
                       onPress={() =>
-                        this.props.navigation.navigate('Detail', {id: book.id})
+                        this.props.navigation.push('Detail', {id: book.id})
                       }>
                       <View key={book.id} style={styles.slider}>
                         <Image
@@ -174,7 +195,7 @@ class HomeScreen extends Component {
                   <TouchableOpacity
                     key={book.id}
                     onPress={() =>
-                      this.props.navigation.navigate('Detail', {
+                      this.props.navigation.push('Detail', {
                         id: book.id,
                       })
                     }>
