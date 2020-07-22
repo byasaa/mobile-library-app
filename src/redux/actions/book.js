@@ -45,6 +45,7 @@ export const patchBorrowBook = (id, token) => {
 };
 
 export const postAddBook = (formData, token) => {
+  console.log(REACT_APP_API_URL);
   return {
     type: 'POST_ADD_BOOK',
     payload: axios({
@@ -52,6 +53,7 @@ export const postAddBook = (formData, token) => {
       url: REACT_APP_API_URL + 'books/',
       data: formData,
       headers: {
+        Accept: 'application/json',
         'Content-Type': 'multipart/form-data',
         Authorization: token,
       },
