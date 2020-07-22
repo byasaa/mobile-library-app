@@ -35,7 +35,23 @@ class AccountScreen extends Component {
               <Text style={[styles.text, styles.role]}>
                 {this.props.auth.data.role}
               </Text>
-              <Button title="logout" onPress={this.handleLogout} />
+              <View
+                style={{
+                  margin: 10,
+                  padding: 10,
+                  flexDirection: 'row',
+                }}>
+                <Button title="Logout" onPress={this.handleLogout} />
+                {this.props.auth.data.role === 'admin' && (
+                  <>
+                    <Text>{'   '}</Text>
+                    <Button
+                      title="Add Book"
+                      onPress={() => this.props.navigation.navigate('Add')}
+                    />
+                  </>
+                )}
+              </View>
             </View>
           </View>
         </ScrollView>

@@ -5,6 +5,7 @@ import RegisterScreen from './auth/RegisterScreen';
 import HistoryScreen from './HistoryScreen';
 import DetailScreen from './DetailScreen';
 import AccountScreen from './auth/AccountScreen';
+import FormAddScreen from './FormAddScreen';
 
 export {
   LoadingScreen,
@@ -14,4 +15,5 @@ export {
   DetailScreen,
   AccountScreen,
   HistoryScreen,
+  FormAddScreen,
 };
