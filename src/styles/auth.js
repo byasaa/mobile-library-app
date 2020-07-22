@@ -45,7 +45,10 @@ const styles = StyleSheet.create({
   },
   formItems: {
     marginTop: 15,
-    borderBottomColor: '#2d3057',
+    paddingRight: 20,
+    paddingLeft: 20,
+    marginHorizontal: 20,
+    marginLeft: 20,
   },
   Input: {
     fontSize: 12,

@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Text} from 'react-native';
+import {View, Text, BackHandler, Alert, TouchableOpacity} from 'react-native';
 import {Form, Item, Input, Button, Toast} from 'native-base';
 import styles from '../../styles/auth';
 import {connect} from 'react-redux';
@@ -35,6 +35,33 @@ class AuthScreen extends Component {
         });
       });
   };
+  handleBackButton = () => {
+    Alert.alert(
+      'Exit App',
+      'Exiting the application?',
+      [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: 'OK',
+          onPress: () => BackHandler.exitApp(),
+        },
+      ],
+      {
+        cancelable: false,
+      },
+    );
+    return true;
+  };
+  componentDidMount() {
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
+  }
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+  }
   render() {
     return (
       <View style={styles.container}>
@@ -45,7 +72,7 @@ class AuthScreen extends Component {
             <Text style={[styles.textContainer, styles.signIn]}>Login</Text>
 
             <Form style={styles.mainForm}>
-              <Item style={styles.formItems}>
+              <Item regular style={styles.formItems}>
                 <Input
                   type="text"
                   placeholder="Username"
@@ -54,7 +81,7 @@ class AuthScreen extends Component {
                   onChangeText={(val) => this.setState({username: val})}
                 />
               </Item>
-              <Item style={styles.formItems}>
+              <Item regular style={styles.formItems}>
                 <Input
                   type="password"
                   placeholder="Password"
@@ -68,6 +95,13 @@ class AuthScreen extends Component {
                 <Button block style={styles.mainBtn} onPress={this.loginUser}>
                   <Text style={styles.btnText}>Login</Text>
                 </Button>
+              </View>
+              <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+                <Text>Don't Have an Account? </Text>
+                <TouchableOpacity
+                  onPress={() => this.props.navigation.navigate('Register')}>
+                  <Text style={{fontStyle: 'italic'}}>Register</Text>
+                </TouchableOpacity>
               </View>
             </Form>
           </View>

@@ -39,12 +39,12 @@ class LoadingScreen extends Component {
       .dispatch(refresh(data))
       .then((res) => {
         console.log(res);
-        this.props.navigation.navigate('Main');
+        this.props.navigation.replace('Main');
       })
       .catch((err) => {
         console.log(JSON.stringify(err));
         this.props.dispatch(logout());
-        this.props.navigation.navigate('Auth');
+        this.props.navigation.replace('Auth');
       });
   }
   render() {
