@@ -11,6 +11,7 @@ import {
   DetailScreen,
   AccountScreen,
   HistoryScreen,
+  FormAddScreen,
 } from '../screens';
 import {connect} from 'react-redux';
 import {Root} from 'native-base';
@@ -89,8 +90,13 @@ function Navigator(props) {
               <Stack.Screen
                 name="Detail"
                 component={DetailScreen}
-                options={{headerTransparent: true, headerTitle: null}}
+                options={{headerShown: false}}
               />
+              {props.auth.data.role === 'admin' ? (
+                <>
+                  <Stack.Screen name="Add" component={FormAddScreen} />
+                </>
+              ) : null}
             </>
           ) : (
             <>
