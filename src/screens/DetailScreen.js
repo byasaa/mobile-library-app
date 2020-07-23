@@ -84,7 +84,9 @@ class DetailScreen extends Component {
       <Container style={styles.container}>
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.titleBar}>
-            <Button transparent onPress={() => this.props.navigation.goBack()}>
+            <Button
+              transparent
+              onPress={() => this.props.navigation.replace('Main')}>
               <Icon name="ios-arrow-back" size={24} color="#52575D" />
             </Button>
             <Button transparent>
@@ -165,7 +167,13 @@ class DetailScreen extends Component {
           ) : (
             <>
               <Item regular style={{marginTop: 20, flex: 1}}>
-                <Button success block style={{width: '100%'}}>
+                <Button
+                  onPress={() =>
+                    this.props.navigation.push('Edit', {id: this.state.book.id})
+                  }
+                  success
+                  block
+                  style={{width: '100%'}}>
                   <Icon name="create-outline" size={20} color="#fff" />
                 </Button>
               </Item>
