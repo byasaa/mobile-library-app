@@ -1,4 +1,4 @@
-import BottomBar from './BottomBar';
+import LoanList from './LoanList';
 import BookList from './BookList';
 
-export {BottomBar, BookList};
+export {LoanList, BookList};
