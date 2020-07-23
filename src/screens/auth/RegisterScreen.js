@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Text} from 'react-native';
+import {View, Text, TouchableOpacity} from 'react-native';
 import {Form, Item, Input, Button, Toast} from 'native-base';
 import styles from '../../styles/auth';
 import {connect} from 'react-redux';
@@ -46,7 +46,7 @@ class RegisterScreen extends Component {
             <Text style={[styles.textContainer, styles.signIn]}>Register</Text>
 
             <Form style={styles.mainForm}>
-              <Item style={styles.formItems}>
+              <Item regular style={styles.formItems}>
                 <Input
                   type="text"
                   placeholder="Username"
@@ -55,7 +55,7 @@ class RegisterScreen extends Component {
                   onChangeText={(val) => this.setState({username: val})}
                 />
               </Item>
-              <Item style={styles.formItems}>
+              <Item regular style={styles.formItems}>
                 <Input
                   type="password"
                   placeholder="Password"
@@ -69,6 +69,13 @@ class RegisterScreen extends Component {
                 <Button block style={styles.mainBtn} onPress={this.regUser}>
                   <Text style={styles.btnText}>Register</Text>
                 </Button>
+              </View>
+              <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+                <Text>Already Have an Account? </Text>
+                <TouchableOpacity
+                  onPress={() => this.props.navigation.navigate('Auth')}>
+                  <Text style={{fontStyle: 'italic'}}>Login</Text>
+                </TouchableOpacity>
               </View>
             </Form>
           </View>

@@ -21,10 +21,12 @@ import {connect} from 'react-redux';
 import {getBook} from '../redux/actions/book';
 import {REACT_APP_API_URL} from '@env';
 import {refresh} from '../redux/actions/auth';
+import {styles} from '../styles/home';
 
 class HomeScreen extends Component {
   state = {
     search: '',
+    searchStore: '',
     books: [],
     page: 1,
     isLoading: true,
@@ -32,11 +34,11 @@ class HomeScreen extends Component {
     refresh: false,
   };
   onRefresh = async () => {
-    await this.setState({isLoading: true, refresh: true, page: 1});
+    await this.setState({isLoading: true, refresh: true, page: 1, search: ''});
     const token = this.props.auth.data.token;
-    const {page} = this.state;
+    const {page, search} = this.state;
     await this.props
-      .dispatch(getBook(token, page))
+      .dispatch(getBook(token, page, search))
       .then((res) => {
         this.setState({
           books: res.action.payload.data.data,
@@ -51,11 +53,36 @@ class HomeScreen extends Component {
         });
       });
   };
+  onSearch = async () => {
+    await this.setState({
+      isLoading: true,
+      page: 1,
+      search: this.state.searchStore,
+    });
+    const token = this.props.auth.data.token;
+    const {page, search} = this.state;
+    await this.props
+      .dispatch(getBook(token, page, search))
+      .then((res) => {
+        this.setState({
+          books: res.action.payload.data.data,
+          refresh: false,
+          isLoading: false,
+        });
+      })
+      .catch(() => {
+        this.setState({
+          refresh: false,
+          isLoading: false,
+          books: [],
+        });
+      });
+  };
   getAllBook = () => {
     const token = this.props.auth.data.token;
-    const {page} = this.state;
+    const {page, search} = this.state;
     this.props
-      .dispatch(getBook(token, page))
+      .dispatch(getBook(token, page, search))
       .then((res) => {
         console.log(res);
         this.setState({
@@ -145,8 +172,11 @@ class HomeScreen extends Component {
             <View style={styles.searchSection}>
               <Icon name="ios-search" size={20} style={styles.inputIcon} />
               <TextInput
+                onSubmitEditing={() => this.onSearch()}
+                onChangeText={(val) => this.setState({searchStore: val})}
                 underlineColorAndroid="transparent"
                 placeholder="Search"
+                defaultValue=""
                 placeholderTextColor="grey"
                 style={styles.search}
               />
@@ -165,9 +195,9 @@ class HomeScreen extends Component {
               }
             }}
             scrollEventThrottle={400}>
-            <View style={styles.margin10}>
-              <Text style={styles.titleSection}>Latest Book</Text>
-              <ScrollView horizontal>
+            {/* <View style={styles.margin10}> */}
+            {/* <Text style={styles.titleSection}>Latest Book</Text> */}
+            {/* <ScrollView horizontal>
                 {this.state.books.map((book) => {
                   return (
                     <TouchableOpacity
@@ -186,10 +216,18 @@ class HomeScreen extends Component {
                     </TouchableOpacity>
                   );
                 })}
-              </ScrollView>
-            </View>
+              </ScrollView> */}
+            {/* </View> */}
             <View style={styles.margin10}>
-              <Text style={styles.titleSection}>All Book</Text>
+              {this.state.search === '' ? (
+                <>
+                  <Text style={styles.titleSection}>All Book</Text>
+                </>
+              ) : (
+                <Text style={styles.titleSection}>
+                  Result of '{this.state.search}'
+                </Text>
+              )}
               {this.state.books.map((book) => {
                 return (
                   <TouchableOpacity
@@ -217,55 +255,3 @@ const mapStateToProps = (state) => ({
   book: state.book,
 });
 export default connect(mapStateToProps)(HomeScreen);
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  head: {
-    height: 80,
-    backgroundColor: 'white',
-    borderBottomWidth: 1,
-    borderBottomColor: '#dddddd',
-  },
-  inputIcon: {
-    marginTop: 13,
-    marginRight: 10,
-    marginLeft: 5,
-  },
-  search: {
-    flex: 1,
-    fontWeight: '700',
-    backgroundColor: 'white',
-  },
-  searchSection: {
-    flexDirection: 'row',
-    backgroundColor: 'white',
-    marginHorizontal: 20,
-    shadowOffset: {width: 0, height: 0},
-    shadowColor: 'black',
-    shadowOpacity: 0.2,
-    elevation: 1,
-    marginTop: Platform.OS === 'android' ? 17 : null,
-  },
-  slider: {
-    paddingRight: 10,
-  },
-  bookImg: {
-    width: 100,
-    height: 160,
-    borderRadius: 6,
-  },
-  titleSection: {
-    fontFamily: 'Quicksand-Bold',
-    fontSize: 20,
-    paddingBottom: 10,
-  },
-  margin10: {
-    margin: 10,
-  },
-  bookGroup: {
-    paddingBottom: 10,
-    flexDirection: 'row',
-  },
-});
