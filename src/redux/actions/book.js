@@ -1,7 +1,7 @@
 import axios from 'axios';
 import {REACT_APP_API_URL} from '@env';
 
-export const getBook = (token, page) => {
+export const getBook = (token, page, search) => {
   return {
     type: 'GET_BOOK',
     payload: axios({
@@ -9,7 +9,8 @@ export const getBook = (token, page) => {
       url: REACT_APP_API_URL + 'books/',
       params: {
         page: page,
-        limit: 2,
+        limit: 4,
+        search: search,
       },
       headers: {
         Authorization: token,
@@ -69,6 +70,7 @@ export const putUpdateBook = (id, formData, token) => {
       url: REACT_APP_API_URL + 'books/' + id,
       data: formData,
       headers: {
+        Accept: 'application/json',
         'Content-Type': 'multipart/form-data',
         Authorization: token,
       },
