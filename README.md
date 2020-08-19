@@ -28,11 +28,10 @@ An online library manager application created using React Native and Redux
 <center>
   <table>
     <tr>
-      <td><img width="100%" alt="chdemko" src="https://raw.githubusercontent.com/byasaa/react-library-app/master/ss/Screenshot_2020-07-13%20React%20App(1).png"></td>
-      <td><img width="100%" alt="chdemko" src="https://raw.githubusercontent.com/byasaa/react-library-app/master/ss/Screenshot_2020-07-13%20React%20App(2).png"></td>
-      <td><img width="100%" alt="chdemko" src="https://raw.githubusercontent.com/byasaa/react-library-app/master/ss/Screenshot_2020-07-13%20React%20App(3).png"></td>
-      <td><img width="100%" alt="chdemko" src="https://raw.githubusercontent.com/byasaa/react-library-app/master/ss/Screenshot_2020-07-13%20React%20App(4).png"></td>
-      <td><img width="100%" alt="chdemko" src="https://raw.githubusercontent.com/byasaa/react-library-app/master/ss/Screenshot_2020-07-13%20React%20App(4).png"></td>
+      <td><img width="100%" alt="chdemko" src="https://raw.githubusercontent.com/byasaa/mobile-library-app/master/ss/Screenshot_1595771397.png"></td>
+      <td><img width="100%" alt="chdemko" src="https://raw.githubusercontent.com/byasaa/mobile-library-app/master/ss/Screenshot_1595772148.png"></td>
+      <td><img width="100%" alt="chdemko" src="https://raw.githubusercontent.com/byasaa/mobile-library-app/master/ss/Screenshot_1595772267.png"></td>
+      <td><img width="100%" alt="chdemko" src="https://raw.githubusercontent.com/byasaa/mobile-library-app/master/ss/Screenshot_1597797410.png"></td>
     </tr>
   </table>
 </center>
