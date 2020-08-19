@@ -12,28 +12,38 @@ class AuthScreen extends Component {
     showToast: false,
   };
   loginUser = (e) => {
-    e.preventDefault();
-    const data = {
-      username: this.state.username,
-      password: this.state.password,
-    };
-    this.props
-      .login(data)
-      .then((res) => {
-        console.log(res);
-        Toast.show({
-          text: 'Success',
-          position: 'bottom',
-        });
-        this.props.navigation.navigate('Main');
-      })
-      .catch((err) => {
-        console.log(err);
-        Toast.show({
-          text: 'Username or Password is Invalid',
-          position: 'bottom',
-        });
+    if (this.state.username === '' || this.state.password === '') {
+      Toast.show({
+        text: 'Username or Password is Required',
+        type: 'danger',
+        position: 'bottom',
       });
+    } else {
+      e.preventDefault();
+      const data = {
+        username: this.state.username,
+        password: this.state.password,
+      };
+      this.props
+        .login(data)
+        .then((res) => {
+          console.log(res);
+          Toast.show({
+            text: 'Success',
+            type: 'success',
+            position: 'bottom',
+          });
+          this.props.navigation.navigate('Main');
+        })
+        .catch((err) => {
+          console.log(err);
+          Toast.show({
+            text: 'Username or Password is Invalid',
+            type: 'danger',
+            position: 'bottom',
+          });
+        });
+    }
   };
   handleBackButton = () => {
     Alert.alert(

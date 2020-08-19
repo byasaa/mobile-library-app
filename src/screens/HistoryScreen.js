@@ -20,11 +20,20 @@ class HistoryScreen extends Component {
   handleGetHistory = async () => {
     const token = this.props.auth.data.token;
     const id = this.props.auth.data.id;
-    await this.props.dispatch(getLoanByUser(id, token));
-    this.setState({
-      loans: this.props.loan.data,
-      isLoading: false,
-    });
+    await this.props
+      .dispatch(getLoanByUser(id, token))
+      .then(() => {
+        this.setState({
+          loans: this.props.loan.data,
+          isLoading: false,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        this.setState({
+          isLoading: false,
+        });
+      });
   };
   componentDidMount = async () => {
     await this.handleGetHistory();

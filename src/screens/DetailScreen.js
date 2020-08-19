@@ -67,8 +67,12 @@ class DetailScreen extends Component {
     await this.props
       .dispatch(patchBorrowBook(id, token))
       .then(() => {
+        Toast.show({
+          text: 'Borrow Success',
+          position: 'bottom',
+          type: 'success',
+        });
         this.getDetailBook();
-        this.getLoanBook();
         this.props.navigation.replace('Detail', {id: id});
       })
       .catch((err) => {
@@ -108,7 +112,11 @@ class DetailScreen extends Component {
             </View>
           </View>
           <View style={styles.infoContainer}>
-            <Text style={[styles.text, {fontWeight: '200', fontSize: 26}]}>
+            <Text
+              style={[
+                styles.text,
+                {paddingLeft: 30, fontWeight: '200', fontSize: 26},
+              ]}>
               {this.state.book.title}
             </Text>
             <Text style={[styles.text, {color: '#AEB5BC', fontSize: 14}]}>
@@ -153,7 +161,7 @@ class DetailScreen extends Component {
         <View style={styles.btnContainer}>
           {this.props.auth.data.role !== 'admin' ? (
             <>
-              <Item regular style={{marginTop: 20, flex: 4}}>
+              <Item regular style={{marginTop: 20, flex: 1}}>
                 <Button
                   disabled={disabledButton}
                   onPress={this.handleBorrowBook}

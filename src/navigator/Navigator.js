@@ -40,8 +40,8 @@ const bottomBar = () => {
         component={HomeScreen}
         options={{
           tabBarLabel: 'Home',
-          tabBarIcon: ({tintColor}) => (
-            <Icon name="home-outline" color={tintColor} size={24} />
+          tabBarIcon: ({color}) => (
+            <Icon name="home-outline" color={color} size={24} />
           ),
         }}
       />

@@ -9,32 +9,40 @@ class RegisterScreen extends Component {
   state = {
     username: '',
     password: '',
-    showToast: false,
   };
   regUser = (e) => {
-    console.log(this.state);
-    e.preventDefault();
-    const data = {
-      username: this.state.username,
-      password: this.state.password,
-    };
-    this.props
-      .dispatch(register(data))
-      .then((res) => {
-        console.log(res);
-        Toast.show({
-          text: 'Success',
-          position: 'bottom',
-        });
-        this.props.navigation.navigate('Auth');
-      })
-      .catch((err) => {
-        console.log(err);
-        Toast.show({
-          text: 'Something Wrong',
-          position: 'bottom',
-        });
+    if (this.state.username === '' || this.state.password === '') {
+      Toast.show({
+        text: 'Username or Password is Required',
+        type: 'danger',
+        position: 'bottom',
       });
+    } else {
+      e.preventDefault();
+      const data = {
+        username: this.state.username,
+        password: this.state.password,
+      };
+      this.props
+        .dispatch(register(data))
+        .then((res) => {
+          console.log(res);
+          Toast.show({
+            text: 'Success',
+            position: 'bottom',
+            type: 'success',
+          });
+          this.props.navigation.navigate('Auth');
+        })
+        .catch((err) => {
+          console.log(err);
+          Toast.show({
+            text: 'Something Wrong',
+            position: 'bottom',
+            type: 'danger',
+          });
+        });
+    }
   };
   render() {
     return (

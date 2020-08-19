@@ -92,11 +92,12 @@ class HomeScreen extends Component {
         });
       })
       .catch((err) => {
+        console.log(err);
         this.setState({isLoading: false, spinnerLoading: false});
-        Toast.show({
-          text: err.message,
-          position: 'bottom',
-        });
+        //   Toast.show({
+        //     text: err.message,
+        //     position: 'bottom',
+        //   });
       });
   };
   handleLoadMore = () => {

@@ -66,7 +66,7 @@ class FormAddScreen extends Component {
       .then(async (res) => {
         console.log(res);
         await Toast.show({
-          text: 'Success',
+          text: 'Add Book Success',
           type: 'success',
           position: 'bottom',
         });
